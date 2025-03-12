@@ -56,6 +56,8 @@
 
 #include "EmuInstance.h"
 
+#include "MelonRipper.h"
+
 using namespace melonDS;
 
 
@@ -166,6 +168,10 @@ void EmuThread::run()
 
         if (emuInstance->hotkeyPressed(HK_SwapScreens)) emit swapScreensToggle();
         if (emuInstance->hotkeyPressed(HK_SwapScreenEmphasis)) emit screenEmphasisToggle();
+
+        // MelonRipper
+        if (emuInstance->hotkeyPressed(HK_RipFrame)) emuInstance->nds->GPU.GPU3D.MelonRipper.RequestRip();
+        if (emuInstance->hotkeyPressed(HK_RipFrameX5)) emuInstance->nds->GPU.GPU3D.MelonRipper.RequestRip(5);
 
         if (emuStatus == emuStatus_Running || emuStatus == emuStatus_FrameStep)
         {

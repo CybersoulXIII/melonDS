@@ -41,5 +41,5 @@ jobs:
       run: cmake --build --preset=release-mingw-x86_64
     - uses: actions/upload-artifact@v4
       with:
-        name: melonDS-windows-x86_64
-        path: .\build\release-mingw-x86_64\melonDS.exe
+        name: melonDS-melonRipper-windows-x86_64
+        path: .\build\release-mingw-x86_64\melonDS-melonRipper.exe

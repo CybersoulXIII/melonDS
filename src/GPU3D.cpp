@@ -26,6 +26,8 @@
 #include "Platform.h"
 #include "GPU3D.h"
 
+#include "MelonRipper.h"
+
 namespace melonDS
 {
 using Platform::Log;
@@ -143,7 +145,8 @@ void MatrixLoadIdentity(s32* m);
 
 GPU3D::GPU3D(melonDS::NDS& nds, std::unique_ptr<Renderer3D>&& renderer) noexcept :
     NDS(nds),
-    CurrentRenderer(renderer ? std::move(renderer) : std::make_unique<SoftRenderer>())
+    CurrentRenderer(renderer ? std::move(renderer) : std::make_unique<SoftRenderer>()),
+    MelonRipper(nds)
 {
 }
 
@@ -307,6 +310,8 @@ void GPU3D::Reset() noexcept
 
     if (CurrentRenderer)
         CurrentRenderer->Reset(NDS.GPU);
+
+    MelonRipper.Reset();
 }
 
 void GPU3D::DoSavestate(Savestate* file) noexcept
@@ -560,6 +565,9 @@ void GPU3D::DoSavestate(Savestate* file) noexcept
     {
         softRenderer->EnableRenderThread();
     }
+
+    if (!file->Saving)
+        MelonRipper.Reset();
 }
 
 
@@ -980,6 +988,10 @@ void GPU3D::SubmitPolygon() noexcept
     v2 = &TempVertexBuffer[2];
     v3 = &TempVertexBuffer[3];
 
+    if (MelonRipper.IsDumping()) {
+        MelonRipper.Polygon(TempVertexBuffer, nverts);
+    }
+
     normalX = ((s64)(v0->Position[1]-v1->Position[1]) * (v2->Position[3]-v1->Position[3]))
         - ((s64)(v0->Position[3]-v1->Position[3]) * (v2->Position[1]-v1->Position[1]));
     normalY = ((s64)(v0->Position[3]-v1->Position[3]) * (v2->Position[0]-v1->Position[0]))
@@ -1359,6 +1371,12 @@ void GPU3D::SubmitVertex() noexcept
 {
     s64 vertex[4] = {(s64)CurVertex[0], (s64)CurVertex[1], (s64)CurVertex[2], 0x1000};
     Vertex* vertextrans = &TempVertexBuffer[VertexNumInPoly];
+
+    if (MelonRipper.IsDumping()) {
+        vertextrans->WorldPosition[0] = (vertex[0]*PosMatrix[0] + vertex[1]*PosMatrix[4] + vertex[2]*PosMatrix[8] + vertex[3]*PosMatrix[12]) >> 12;
+        vertextrans->WorldPosition[1] = (vertex[0]*PosMatrix[1] + vertex[1]*PosMatrix[5] + vertex[2]*PosMatrix[9] + vertex[3]*PosMatrix[13]) >> 12;
+        vertextrans->WorldPosition[2] = (vertex[0]*PosMatrix[2] + vertex[1]*PosMatrix[6] + vertex[2]*PosMatrix[10] + vertex[3]*PosMatrix[14]) >> 12;
+    }
 
     UpdateClipMatrix();
     vertextrans->Position[0] = (vertex[0]*ClipMatrix[0] + vertex[1]*ClipMatrix[4] + vertex[2]*ClipMatrix[8] + vertex[3]*ClipMatrix[12]) >> 12;
@@ -1984,16 +2002,19 @@ void GPU3D::ExecuteCommand() noexcept
         case 0x29: // polygon attributes
             VertexPipelineCmdDelayed8();
             PolygonAttr = entry.Param;
+            if (MelonRipper.IsDumping()) MelonRipper.PolygonAttr(PolygonAttr);
             break;
 
         case 0x2A: // texture param
             VertexPipelineCmdDelayed8();
             TexParam = entry.Param;
+            if (MelonRipper.IsDumping()) MelonRipper.TexParam(TexParam);
             break;
 
         case 0x2B: // texture palette
             VertexPipelineCmdDelayed8();
             TexPalette = entry.Param & 0x1FFF;
+            if (MelonRipper.IsDumping()) MelonRipper.TexPalette(TexPalette);
             break;
 
         case 0x30: // diffuse/ambient material
@@ -2529,12 +2550,16 @@ void GPU3D::VBlank() noexcept
             NumOpaquePolygons = 0;
 
             FlushRequest = 0;
+
+            MelonRipper.NotifyFlush();
         }
     }
 }
 
 void GPU3D::VCount215(GPU& gpu) noexcept
 {
+    MelonRipper.NotifyRender();
+    
     CurrentRenderer->RenderFrame(gpu);
 }
 

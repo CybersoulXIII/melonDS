@@ -50,6 +50,8 @@ enum
     HK_SlowMo,
     HK_FastForwardToggle,
     HK_SlowMoToggle,
+    HK_RipFrame,
+    HK_RipFrameX5,
     HK_MAX
 };
 

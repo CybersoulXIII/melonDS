@@ -25,6 +25,8 @@
 #include "Savestate.h"
 #include "FIFO.h"
 
+#include "MelonRipper.h"
+
 namespace melonDS
 {
 class GPU;
@@ -46,6 +48,9 @@ struct Vertex
     // hi-res position (4-bit fractional part)
     // TODO maybe: hi-res color? (that survives clipping)
     s32 HiresPosition[2];
+
+    // used by MelonRipper
+    s32 WorldPosition[3];
 
     void DoSavestate(Savestate* file) noexcept;
 };
@@ -327,6 +332,8 @@ public:
     u32 FlushRequest = 0;
     u32 FlushAttributes = 0;
     u32 ScrolledLine[256]; // not part of the hardware state, don't serialize
+
+    melonDS::MelonRipper MelonRipper;
 };
 
 class Renderer3D

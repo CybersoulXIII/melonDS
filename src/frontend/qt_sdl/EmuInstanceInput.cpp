@@ -59,7 +59,9 @@ const char* EmuInstance::hotkeyNames[HK_MAX] =
     "HK_VolumeDown",
     "HK_SlowMo",
     "HK_FastForwardToggle",
-    "HK_SlowMoToggle"
+    "HK_SlowMoToggle",
+    "HK_RipFrame",
+    "HK_RipFrameX5",
 };
 
 

@@ -170,6 +170,10 @@ LegacyEntry LegacyFile[] =
     {"HKKey_VolumeUp",            0, "Keyboard.HK_VolumeUp", true},
     {"HKKey_VolumeDown",          0, "Keyboard.HK_VolumeDown", true},
 
+    // MelonRipper
+    {"HKKey_RipFrame",            0, "Keyboard.HK_RipFrame", true},
+    {"HKKey_RipFrameX5",          0, "Keyboard.HK_RipFrameX5", true},
+
     {"HKJoy_Lid",                 0, "Joystick.HK_Lid", true},
     {"HKJoy_Mic",                 0, "Joystick.HK_Mic", true},
     {"HKJoy_Pause",               0, "Joystick.HK_Pause", true},
@@ -185,6 +189,10 @@ LegacyEntry LegacyFile[] =
     {"HKJoy_PowerButton",         0, "Joystick.HK_PowerButton", true},
     {"HKJoy_VolumeUp",            0, "Joystick.HK_VolumeUp", true},
     {"HKJoy_VolumeDown",          0, "Joystick.HK_VolumeDown", true},
+
+    // MelonRipper
+    {"HKJoy_RipFrame",            0, "Joystick.HK_RipFrame", true},
+    {"HKJoy_RipFrameX5",          0, "Joystick.HK_RipFrameX5", true},
 
     {"JoystickID", 0, "JoystickID", true},
 

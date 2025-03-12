@@ -32,12 +32,20 @@ static constexpr std::initializer_list<int> hk_addons =
 {
     HK_SolarSensorIncrease,
     HK_SolarSensorDecrease,
+
+    // MelonRipper
+    HK_RipFrame,
+    HK_RipFrameX5,
 };
 
 static constexpr std::initializer_list<const char*> hk_addons_labels =
 {
     "[Boktai] Sunlight + ",
     "[Boktai] Sunlight - ",
+
+    // MelonRipper
+    "[MelonRipper] Rip ",
+    "[MelonRipper] Rip x5",
 };
 
 static_assert(hk_addons.size() == hk_addons_labels.size());

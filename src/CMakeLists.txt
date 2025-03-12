@@ -57,6 +57,8 @@ add_library(core STATIC
     Wifi.cpp
     WifiAP.cpp
 
+    MelonRipper.cpp
+
     fatfs/ff.c
     fatfs/ffsystem.c
     fatfs/ffunicode.c
